@@ -1,6 +1,7 @@
 package com.examenfinal.examenbackend.model.responses;
 
-import java.sql.Date;
+
+import java.util.Date;
 
 import lombok.Data;
 
