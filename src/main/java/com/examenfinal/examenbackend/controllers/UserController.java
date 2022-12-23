@@ -21,11 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.examenfinal.examenbackend.entities.Bill;
 import com.examenfinal.examenbackend.entities.User;
 import com.examenfinal.examenbackend.model.requests.BillRequest;
-import com.examenfinal.examenbackend.model.responses.BillResponse;
 import com.examenfinal.examenbackend.repository.BillRepository;
 import com.examenfinal.examenbackend.repository.UserRepository;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/users")
 public class UserController {
