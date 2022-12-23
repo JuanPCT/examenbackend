@@ -46,12 +46,12 @@ public class UserController {
     }
 
     @PostMapping("/{id}/bills")
-    public BillResponse postBillbyUser(@PathVariable Integer id,@RequestBody BillRequest billRequest)
+    public BillResponse postBillbyUser(@PathVariable Integer id, @RequestBody BillRequest billRequest)
             throws Exception {
         BillResponse billResponse = new BillResponse();
         Bill bill = new Bill();
         Date date = new Date();
-        
+
         BeanUtils.copyProperties(billRequest, bill);
         bill.setDate_bill(date);
         Optional<User> user = userRepository.findById(id);
@@ -75,20 +75,54 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}/bills/{bill_id}")
-    public Bill deleteBillbyUser(@PathVariable Integer id, @PathVariable Integer bill_id) throws Exception{
-        Optional<Bill> bill = billRepository.findById(bill_id);
-        if (bill.isPresent()) {
-            billRepository.deleteById(bill_id);
-            return bill.get();
+    public Bill deleteBillbyUser(@PathVariable Integer id, @PathVariable Integer bill_id) throws Exception {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            List<Bill> bills = user.get().getBill();
+            Bill bill1 = new Bill();
+            boolean existe = false;
+            for (Bill bill : bills) {
+                if (bill.getId()==bill_id) {
+                    existe = true;
+                    bill1 = bill;
+                }
+            }
+            if (existe) {
+                billRepository.deleteById(bill_id);
+                return bill1;
+            } else {
+                throw new Exception("Bill no existe");
+            }
         }else{
-            throw new Exception("Bill no existe");
+            throw new Exception("User no existe");
         }
-        
-        
+
     }
 
-    @GetMapping("/all")
-    public List<User> getAll(){
+    @GetMapping("/{id}/bills/{bill_id}")
+    public Bill getBillbyUser(@PathVariable Integer id, @PathVariable Integer bill_id) throws Exception{
+    Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            List<Bill> bills = user.get().getBill();
+            Bill bill1 = new Bill();
+            boolean existe = false;
+            for (Bill bill : bills) {
+                if (bill.getId()==bill_id) {
+                    existe = true;
+                    bill1 = bill;
+                }
+            }
+            if (existe) {
+                return bill1;
+            } else {
+                throw new Exception("Bill no existe");
+            }
+        }else{
+            throw new Exception("User no existe");
+        }
+    }
+
+    @GetMapping("/all") public List<User> getAll() {
         return userRepository.findAll();
     }
 }
