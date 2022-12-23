@@ -1,5 +1,8 @@
 package com.examenfinal.examenbackend.repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public class UserRepository {
+import com.examenfinal.examenbackend.entities.User;
+
+public interface UserRepository extends JpaRepository<User, Integer> {
     
 }
