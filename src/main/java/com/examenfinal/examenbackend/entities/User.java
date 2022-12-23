@@ -26,6 +26,6 @@ public class User {
     private String pass;
     private String email;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user_id")
     private List<Bill> bill;
 }

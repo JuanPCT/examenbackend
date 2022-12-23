@@ -35,50 +35,38 @@ public class UserController {
     @Autowired
     BillRepository billRepository;
 
-    @GetMapping("/{id}/bills")
-    public List<Bill> getBillsbyUser(@PathVariable Integer id) {
+    @GetMapping("/{user}/bills")
+    public List<Bill> getBillsbyUser(@PathVariable String user) {
         List<Bill> bills = new ArrayList<>();
-        Optional<User> user = userRepository.findById(id);
-        if (user.isPresent()) {
-            bills = user.get().getBill();
+        Optional<User> usuario = userRepository.findByUsername(user);
+        if (usuario.isPresent()) {
+            bills = usuario.get().getBill();
         }
         return bills;
     }
 
-    @PostMapping("/{id}/bills")
-    public BillResponse postBillbyUser(@PathVariable Integer id, @RequestBody BillRequest billRequest)
-            throws Exception {
-        BillResponse billResponse = new BillResponse();
-        Bill bill = new Bill();
-        Date date = new Date();
-
-        BeanUtils.copyProperties(billRequest, bill);
-        bill.setDate_bill(date);
-        Optional<User> user = userRepository.findById(id);
-        if (user.isPresent()) {
-            User usuario = user.get();
-            List<Bill> bills = usuario.getBill();
-            bills.add(bill);
-            usuario.setBill(bills);
-            userRepository.save(usuario);
-            bill.setUser(usuario);
-            bill = billRepository.save(bill);
-            BeanUtils.copyProperties(bill, billResponse);
-            billResponse.setUser(bill.getUser().getUsername());
-            billResponse.setId(bill.getId());
-            billResponse.setDate(date);
-        } else {
-            throw new Exception("El usuario no existe");
+    @PostMapping("/{user}/bills")
+	public Bill saveBill(@PathVariable String user, @RequestBody BillRequest billreq) throws Exception {
+        Optional<User> usuario = userRepository.findByUsername(user);
+		if(usuario.isPresent()) {
+            Bill bill = new Bill();
+            Date date = new Date();
+            BeanUtils.copyProperties(billreq, bill);
+            bill.setUser_id(usuario.get().getId());
+            bill.setDate_bill(date);
+            
+			return billRepository.save(bill);
+		}else{
+            throw new Exception("El usuario no existe");            
         }
+		
+	}
 
-        return billResponse;
-    }
-
-    @DeleteMapping("/{id}/bills/{bill_id}")
-    public Bill deleteBillbyUser(@PathVariable Integer id, @PathVariable Integer bill_id) throws Exception {
-        Optional<User> user = userRepository.findById(id);
-        if (user.isPresent()) {
-            List<Bill> bills = user.get().getBill();
+    @DeleteMapping("/{user}/bills/{bill_id}")
+    public Bill deleteBillbyUser(@PathVariable String user, @PathVariable Integer bill_id) throws Exception {
+        Optional<User> usuario = userRepository.findByUsername(user);
+        if (usuario.isPresent()) {
+            List<Bill> bills = usuario.get().getBill();
             Bill bill1 = new Bill();
             boolean existe = false;
             for (Bill bill : bills) {
@@ -99,11 +87,11 @@ public class UserController {
 
     }
 
-    @GetMapping("/{id}/bills/{bill_id}")
-    public Bill getBillbyUser(@PathVariable Integer id, @PathVariable Integer bill_id) throws Exception{
-    Optional<User> user = userRepository.findById(id);
-        if (user.isPresent()) {
-            List<Bill> bills = user.get().getBill();
+    @GetMapping("/{user}/bills/{bill_id}")
+    public Bill getBillbyUser(@PathVariable String user, @PathVariable Integer bill_id) throws Exception{
+    Optional<User> usuario = userRepository.findByUsername(user);
+        if (usuario.isPresent()) {
+            List<Bill> bills = usuario.get().getBill();
             Bill bill1 = new Bill();
             boolean existe = false;
             for (Bill bill : bills) {
@@ -122,7 +110,13 @@ public class UserController {
         }
     }
 
-    @GetMapping("/all") public List<User> getAll() {
+    @GetMapping("/all") 
+    public List<User> getAll() {
         return userRepository.findAll();
+    }
+
+    @GetMapping("/bills")
+    public List<Bill> getBills(){
+        return billRepository.findAll();
     }
 }

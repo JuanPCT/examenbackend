@@ -21,16 +21,12 @@ import lombok.Data;
 public class Bill {
 
     @Id
-    @SequenceGenerator(name="bill_id_seq", allocationSize=1)
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="bill_id_seq")
-    private Integer id;
-    private Date date_bill;
-    private int value;
-    private int type;
-    private String observation;
-    
-    @JsonIgnore
-    @ManyToOne
-	@JoinColumn(name = "user_id",insertable = false,updatable = false)
-    private User user;
+	@SequenceGenerator(name="bill_id_seq",allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "bill_id_seq")
+	private Integer id;
+	private Date date_bill;
+	private Integer user_id;
+	private Integer value;
+	private String observation;
+    private Integer type;
 }

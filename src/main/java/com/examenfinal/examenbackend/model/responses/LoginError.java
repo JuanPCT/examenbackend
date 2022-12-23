@@ -3,10 +3,7 @@ package com.examenfinal.examenbackend.model.responses;
 import lombok.Data;
 
 @Data
-public class UserResponse {
-    
+public class LoginError {
     private boolean login;
-    private String username;
-    private String email;
     private String message;
 }
